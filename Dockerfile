@@ -1,17 +1,20 @@
-FROM debian
+FROM i386/debian:jessie
 
 ENV HOME /home/steam
 ENV STEAMCMDDIR	$HOME/steamcmd
 ENV GAMESRVDIR	$HOME/gamesrv
+ENV DOCKERGO	$HOME/docker-scripts
 ENV SRVPORT	27015
 
 RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y --no-install-recommends --no-install-suggests \
-		lib32stdc++6 \
-		lib32gcc1 \
 		wget \
 		ca-certificates \
+		libtinfo5 \
+		libtcmalloc-minimal4 \
+		libstdc++6 \
+		libgcc1 \
 	&& apt-get clean autoclean \
 	&& apt-get autoremove -y \
 	&& rm -rf /var/lib/apt/lists/*
@@ -22,9 +25,7 @@ RUN useradd -m steam \
 		&& cd $STEAMCMDDIR \
 		&& wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf -"
 
-EXPORT $SRVPORT
+EXPOSE $SRVPORT
 USER steam
-
-ADD /scripts $DOCKERGO
-RUN chmod -R 755 $DOCKERGO
-ENTRYPOINT $DOCKERGO/server_init.sh
+WORKDIR $STEAMCMDDIR
+VOLUME $STEAMCMDDIR
