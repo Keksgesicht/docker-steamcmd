@@ -1,10 +1,10 @@
 FROM i386/debian:jessie
 
-ENV HOME /home/steam
+ENV HOME		/home/steam
 ENV STEAMCMDDIR	$HOME/steamcmd
 ENV GAMESRVDIR	$HOME/gamesrv
 ENV DOCKERGO	$HOME/docker-scripts
-ENV SRVPORT	27015
+ENV SVPORT		27015
 
 RUN set -x \
 	&& apt-get update \
@@ -25,7 +25,7 @@ RUN useradd -m steam \
 		&& cd $STEAMCMDDIR \
 		&& wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf -"
 
-EXPOSE $SRVPORT
+EXPOSE $SVPORT
 USER steam
 WORKDIR $STEAMCMDDIR
 VOLUME $STEAMCMDDIR
