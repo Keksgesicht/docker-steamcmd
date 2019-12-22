@@ -34,18 +34,18 @@ RUN $STEAMCMDDIR/steamcmd.sh \
         echo 'force_install_dir $STEAMAPPDIR'; \
         echo 'app_update $STEAMAPPID'; \
         echo 'quit'; \
-    } > $STEAMAPPDIR/steamcmd_update.txt
- && echo '"mountcfg"{"cstrike" "$STEAMCSSDIR/cstrike"}' >> /steam/gmod/garrysmod/cfg/mount.cfg
+    } > $STEAMAPPDIR/steamcmd_update.txt \
+ && echo '"mountcfg"{"cstrike" "$STEAMCSSDIR/cstrike"}' >> $STEAMAPPDIR/garrysmod/cfg/mount.cfg
 
 EXPOSE $SVPORT
 WORKDIR $STEAMAPPDIR
-VOLUME $STEAMAPPDIR/garrysmod/addons/
-       $STEAMAPPDIR/garrysmod/cache/srcds/
+VOLUME $STEAMAPPDIR/garrysmod/addons/ \
+       $STEAMAPPDIR/garrysmod/cache/srcds/ \
        $STEAMAPPDIR/garrysmod/data/
 ENTRYPOINT [ "./srcds_run", \
              "-game garrysmod", \
-			 "-console", 
-			 "-autoupdate -steam_dir $STEAMCMDDIR -steamcmd_script $STEAMAPPDIR/steamcmd_update.txt", \
+             "-console", \
+             "-autoupdate -steam_dir $STEAMCMDDIR -steamcmd_script $STEAMAPPDIR/steamcmd_update.txt", \
              "-norestart", \
              "-nohltv", \
              "+hostport $SVPORT", \
