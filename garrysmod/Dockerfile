@@ -1,4 +1,4 @@
-FROM steamcmd
+FROM keksgesicht/steamcmd
 
 ENV STEAMAPPID  4020
 ENV STEAMAPPDIR $HOME/gmod
