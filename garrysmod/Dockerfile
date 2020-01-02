@@ -1,4 +1,4 @@
-FROM keksgesicht/steamcmd
+FROM steamcmd
 
 ENV STEAMAPPID  4020
 ENV STEAMAPPDIR $HOME/gmod
@@ -28,25 +28,23 @@ RUN $STEAMCMDDIR/steamcmd.sh \
         +app_update $STEAMCSSID validate \
         +quit \
  && { \
-        echo '@ShutdownOnFailedCommand 1'; \
-        echo '@NoPromptForPassword 1'; \
-        echo 'login anonymous'; \
-        echo 'force_install_dir $STEAMAPPDIR'; \
-        echo 'app_update $STEAMAPPID'; \
-        echo 'quit'; \
+        echo "@ShutdownOnFailedCommand 1"; \
+        echo "@NoPromptForPassword 1"; \
+        echo "login anonymous"; \
+        echo "force_install_dir $STEAMAPPDIR"; \
+        echo "app_update $STEAMAPPID"; \
+        echo "quit"; \
     } > $STEAMAPPDIR/steamcmd_update.txt \
- && echo '"mountcfg"{"cstrike" "$STEAMCSSDIR/cstrike"}' >> $STEAMAPPDIR/garrysmod/cfg/mount.cfg
+ && echo "\"mountcfg\"{\"cstrike\" \"$STEAMCSSDIR/cstrike/cstrike\"}" >> $STEAMAPPDIR/garrysmod/cfg/mount.cfg
 
-EXPOSE $SVPORT
+EXPOSE $SVPORT/udp
 WORKDIR $STEAMAPPDIR
 VOLUME $STEAMAPPDIR/garrysmod/addons/ \
        $STEAMAPPDIR/garrysmod/cache/srcds/ \
        $STEAMAPPDIR/garrysmod/data/
-ENTRYPOINT [ "./srcds_run", \
-             "-game garrysmod", \
-             "-console", \
-             "-autoupdate -steam_dir $STEAMCMDDIR -steamcmd_script $STEAMAPPDIR/steamcmd_update.txt", \
-             "-norestart", \
-             "-nohltv", \
-             "+hostport $SVPORT", \
-             "$SVPARAMS" ]
+ENTRYPOINT ./srcds_run \
+           -game garrysmod \
+           $SVPARAMS \
+           -autoupdate -steam_dir $STEAMCMDDIR -steamcmd_script $STEAMAPPDIR/steamcmd_update.txt \
+           -norestart \
+           +hostport $SVPORT

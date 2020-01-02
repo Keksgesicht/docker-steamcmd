@@ -2,6 +2,8 @@ FROM debian:jessie
 
 ENV HOME        /home/steam
 ENV STEAMCMDDIR $HOME/steamcmd
+ENV UID         99
+ENV GID         100
 
 RUN set -x \
  && apt-get update \
@@ -9,12 +11,12 @@ RUN set -x \
         wget \
         ca-certificates \
         lib32gcc1 \
- && useradd -m steam \
+ && useradd --uid $UID --gid $GID -m steam \
  && su steam -c \
         "mkdir -p $STEAMCMDDIR \
-        && cd $STEAMCMDDIR \
-        && wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - \
-        && ./steamcmd.sh +login anonymous +quit" \
+     && cd $STEAMCMDDIR \
+     && wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - \
+     && ./steamcmd.sh +login anonymous +quit" \
  && apt-get remove --purge -y \
         wget \
  && apt-get clean autoclean \
