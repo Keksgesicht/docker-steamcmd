@@ -39,9 +39,7 @@ RUN $STEAMCMDDIR/steamcmd.sh \
 
 EXPOSE $SVPORT/udp
 WORKDIR $STEAMAPPDIR
-VOLUME $STEAMAPPDIR/garrysmod/addons/ \
-       $STEAMAPPDIR/garrysmod/cache/srcds/ \
-       $STEAMAPPDIR/garrysmod/data/
+	   
 ENTRYPOINT ./srcds_run \
            -game garrysmod \
            $SVPARAMS \
