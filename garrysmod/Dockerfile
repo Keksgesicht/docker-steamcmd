@@ -35,11 +35,10 @@ RUN $STEAMCMDDIR/steamcmd.sh \
         echo "app_update $STEAMAPPID"; \
         echo "quit"; \
     } > $STEAMAPPDIR/steamcmd_update.txt \
- && echo "\"mountcfg\"{\"cstrike\" \"$STEAMCSSDIR/cstrike/cstrike\"}" >> $STEAMAPPDIR/garrysmod/cfg/mount.cfg
+ && echo "\"mountcfg\" {\n\t\"cstrike\" \"$STEAMCSSDIR/cstrike\"\n}" > $STEAMAPPDIR/garrysmod/cfg/mount.cfg
 
 EXPOSE $SVPORT/udp
-WORKDIR $STEAMAPPDIR
-	   
+WORKDIR $STEAMAPPDIR	   
 ENTRYPOINT ./srcds_run \
            -game garrysmod \
            $SVPARAMS \
