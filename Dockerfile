@@ -1,29 +1,45 @@
 FROM debian:jessie
 
-ENV HOME        /home/steam
-ENV STEAMCMDDIR $HOME/steamcmd
 ENV UID         99
 ENV GID         100
+ENV HOME        /home/steam
+
+ENV SCRIPTS     $HOME/scripts
+ENV STEAMCMDDIR $HOME/steamcmd
+ENV STEAMAPPDIR $HOME/library
+
+ENV STEAMAPPID  4020
+ENV GAMENAME    garrysmod
+
+ENV SVPORT      27015
+ENV SVPARAMS    "+exec server.cfg"
 
 RUN set -x \
+ && dpkg --add-architecture i386 \
  && apt-get update \
  && apt-get install -y --no-install-recommends --no-install-suggests \
         wget \
         ca-certificates \
         lib32gcc1 \
+        lib32stdc++6 \
+        lib32tinfo5 \
  && useradd --uid $UID --gid $GID -m steam \
- && su steam -c \
-        "mkdir -p $STEAMCMDDIR \
-     && cd $STEAMCMDDIR \
-     && wget -qO- 'https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz' | tar zxf - \
-     && ./steamcmd.sh +login anonymous +quit" \
- && apt-get remove --purge -y \
-        wget \
  && apt-get clean autoclean \
  && apt-get autoremove -y \
  && rm -rf /var/lib/apt/lists/*
 
+ADD [--chown=$UID:$GID] scripts/ $SCRIPTS
+RUN mkdir -p $STEAMCMDDIR \
+             $STEAMAPPDIR \
+ && chmod +x -R $SCRIPTS \
+ && chown $UID:$GID -R $HOME
+ 
+EXPOSE $SVPORT/udp
+VOLUME $STEAMCMDDIR \
+       $STEAMAPPDIR
+
 USER steam
-WORKDIR $STEAMCMDDIR
-ENTRYPOINT [ "./steamcmd.sh", \
-             "+login anonymous" ]
+WORKDIR $SCRIPTS
+ENTRYPOINT ./steamcmd.sh \
+        && ./srcds_install.sh \
+        && ./srcds_start.sh
