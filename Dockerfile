@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:oldstable
 
 ENV UID         99
 ENV GID         100
@@ -15,7 +15,6 @@ ENV SVPORT      27015
 ENV SVPARAMS    "+exec server.cfg"
 
 RUN set -x \
- && dpkg --add-architecture i386 \
  && apt-get update \
  && apt-get install -y --no-install-recommends --no-install-suggests \
         wget \
@@ -40,6 +39,6 @@ VOLUME $STEAMCMDDIR \
 
 USER steam
 WORKDIR $SCRIPTS
-ENTRYPOINT ./steamcmd.sh \
+ENTRYPOINT ./cmd_download.sh \
         && ./srcds_install.sh \
         && ./srcds_start.sh
